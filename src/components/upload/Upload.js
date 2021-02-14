@@ -158,10 +158,12 @@ function Upload() {
                         </Form.Group>
                         <Form.Group controlId="formFullName" id='form-group-full-name'>
                             <Form.Control type="input" className="text-center" placeholder="Full name: eg. John Doe"
+                                          autoComplete="off"
                                           onChange={handleFullNameChange}/>
                         </Form.Group>
                         <Form.Group controlId="formEmail" id='form-group-email-id'>
                             <Form.Control type="email" className="text-center" placeholder="Your email"
+                                          autoComplete="off"
                                           onChange={handleEmailChange}/>
                             <Form.Text muted>
                                 You will receive your report on the provided email
