@@ -117,7 +117,7 @@ function Upload() {
         formData.append('email', email)
         formData.append('fullName', fullName)
 
-        axios.post('http://localhost:8080/api/statements/upload', formData, {
+        axios.post('https://taxes-api.digitools-it.com/api/statements/upload', formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
