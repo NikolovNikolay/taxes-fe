@@ -117,18 +117,19 @@ function Upload() {
         formData.append('email', email)
         formData.append('fullName', fullName)
 
-        axios.post('https://taxes-api.digitools-it.com/api/statements/upload', formData, {
+        axios.post('http://localhost:8080/api/statements/upload', formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
         })
             .then(res => {
                 setRequestID(res.data.request_id)
-                setRequestStatus('SUCCESS')
+                setRequestStatus(statusSuccess)
             })
             .catch(e => {
                 console.error(e.response.data)
-                setRequestStatus('FAILED')
+                setRequestID('')
+                setRequestStatus(statusFail)
             })
             .finally(() => {
                 setSubmitted(false)
@@ -200,11 +201,11 @@ function Upload() {
                                         Submit
                                     </Button> :
                                     <OverlayTrigger
-                                        placement="right"
+                                        placement="bottom"
                                         delay={{show: 250, hide: 400}}
                                         overlay={
-                                            <Tooltip id="button-tooltip">Select statements, type and input email to
-                                                submit
+                                            <Tooltip id="button-tooltip">Select statements, type and input your name and
+                                                email to submit
                                             </Tooltip>
                                         }>
                                         <Button title="submit" variant="outline-danger" block>Submit</Button>
@@ -229,9 +230,12 @@ function Upload() {
                 <Modal.Body>
                     <h5>Status</h5>
                     {
-                        requestID === '' ?
+                        requestStatus === '' ?
                             <Skeleton/> :
-                            <Form.Text className="text-success">{requestStatus}</Form.Text>
+                            <Form.Text
+                                className={requestStatus === statusSuccess ? "text-success" : "text-danger"}>
+                                {requestStatus}
+                            </Form.Text>
 
                     }
                     <br/>
