@@ -1,18 +1,43 @@
 import * as React from "react";
 import {useState} from "react";
-import {Button, Col, Container, Dropdown, DropdownButton, Form, OverlayTrigger, Row, Tooltip} from "react-bootstrap";
+import {
+    Alert,
+    Button,
+    Col,
+    Container,
+    Dropdown,
+    DropdownButton,
+    Form,
+    Modal,
+    OverlayTrigger,
+    Row,
+    Tooltip
+} from "react-bootstrap";
 import './Uplaod.css'
 import axios from "axios";
+import Skeleton from "react-loading-skeleton";
+import {CopyToClipboard} from "react-copy-to-clipboard/lib/Component";
 
 function Upload() {
 
+    const statusSuccess = "SUCCESS";
+    const statusFail = "FAILED";
+
     const defaultFormFileTitle = 'Select statements';
+    const defaultSubmitModalHeader = 'Submitting request';
+    const completedSubmitModalHeader = 'Submitted';
+
     const [year, setYear] = useState('2020')
     const [type, setType] = useState('')
     const [email, setEmail] = useState('')
     const [files, setFiles] = useState([])
     const [fullName, setFullName] = useState('')
     const [validEmail, setValidEmail] = useState(false)
+    const [submitted, setSubmitted] = useState(false)
+    const [requestID, setRequestID] = useState('')
+    const [requestStatus, setRequestStatus] = useState('')
+    const [showModal, setShowModal] = useState(false)
+    const [showAlert, setShowAlert] = useState(false)
 
     const handleSelectYear = (e) => {
         setYear(e)
@@ -58,7 +83,29 @@ function Upload() {
         return year !== '' && type !== '' && files.length > 0 && validEmail && fullName !== ''
     }
 
+    const handleDismissAlert = () => {
+        setShowAlert(false)
+    }
+
+    const handleCopyReqID = () => {
+        setShowAlert(true)
+    }
+
+    const handleModalClose = () => {
+        setShowModal(false)
+        setShowAlert(false)
+        setSubmitted(false)
+        setRequestStatus('')
+        setRequestID('')
+    }
+
     const handleSubmit = () => {
+        if (submitted) {
+            return
+        }
+
+        setSubmitted(true)
+        setShowModal(true)
         const formData = new FormData();
         const statements = document.querySelector('#statements');
         for (let i = 0; i < statements.files.length; i++) {
@@ -76,10 +123,15 @@ function Upload() {
             }
         })
             .then(res => {
-                console.log(res.data)
+                setRequestID(res.data.request_id)
+                setRequestStatus('SUCCESS')
             })
             .catch(e => {
                 console.error(e.response.data)
+                setRequestStatus('FAILED')
+            })
+            .finally(() => {
+                setSubmitted(false)
             })
     }
 
@@ -161,6 +213,44 @@ function Upload() {
                 </Col>
                 <Col/>
             </Row>
+            <Modal
+                size="md"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                show={showModal}
+            >
+                <Modal.Header>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        {requestStatus === '' ? defaultSubmitModalHeader : completedSubmitModalHeader}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h5>Status</h5>
+                    {
+                        requestID === '' ?
+                            <Skeleton/> :
+                            <Form.Text className="text-success">{requestStatus}</Form.Text>
+
+                    }
+                    <br/>
+                    <h5>Request ID</h5>
+                    {
+                        requestID !== '' || requestStatus === statusFail ?
+                            <Form.Text>{requestID}</Form.Text> :
+                            <Skeleton/>
+                    }
+                </Modal.Body>
+                <Modal.Footer>
+                    <Alert dismissible onClick={handleDismissAlert} show={showAlert}
+                           variant={"success"}>
+                        <Form.Text>Copied <strong> {requestID}</strong> to clipboard</Form.Text>
+                    </Alert>
+                    <CopyToClipboard text={requestID}>
+                        <Button onClick={handleCopyReqID}>Copy request ID</Button>
+                    </CopyToClipboard>
+                    <Button variant="danger" onClick={handleModalClose}>Close</Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     )
 }
