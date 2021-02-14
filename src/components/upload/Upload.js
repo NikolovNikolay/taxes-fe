@@ -251,9 +251,11 @@ function Upload() {
                            variant={"success"}>
                         <Form.Text>Copied <strong> {requestID}</strong> to clipboard</Form.Text>
                     </Alert>
+                    {requestStatus === statusSuccess ??
                     <CopyToClipboard text={requestID}>
                         <Button onClick={handleCopyReqID}>Copy request ID</Button>
                     </CopyToClipboard>
+                    }
                     <Button variant="danger" onClick={handleModalClose}>Close</Button>
                 </Modal.Footer>
             </Modal>
