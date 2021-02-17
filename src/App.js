@@ -15,7 +15,7 @@ function App() {
     return (
         <HashRouter>
             <div className="App">
-                <Navbar bg="dark" variant="dark">
+                <Navbar bg="dark" variant="dark" sticky={"top"}>
                     <Nav className="mr-auto">
                         <LinkContainer to={"/"}>
                             <Nav.Link href="">Submit statements</Nav.Link>
