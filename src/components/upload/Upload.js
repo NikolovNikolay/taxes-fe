@@ -1,31 +1,30 @@
 import * as React from "react";
 import {useState} from "react";
+import {validate as uuidValidate} from 'uuid';
 import {
-    Alert,
     Button,
     Col,
     Container,
     Dropdown,
     DropdownButton,
     Form,
+    FormText,
+    Image,
     Modal,
     OverlayTrigger,
     Row,
+    Spinner,
     Tooltip
 } from "react-bootstrap";
 import './Uplaod.css'
+import logo from './stripe_logo.svg'
 import axios from "axios";
-import Skeleton from "react-loading-skeleton";
-import {CopyToClipboard} from "react-copy-to-clipboard/lib/Component";
+import {useHistory} from "react-router-dom";
 
-function Upload() {
+function Upload({stripePromise}) {
+    const history = useHistory();
 
-    const statusSuccess = "SUCCESS";
-    const statusFail = "FAILED";
-
-    const defaultFormFileTitle = 'Select statements';
-    const defaultSubmitModalHeader = 'Submitting request';
-    const completedSubmitModalHeader = 'Submitted';
+    const defaultFormFileTitle = 'nothing selected';
 
     const [year, setYear] = useState('2020')
     const [type, setType] = useState('')
@@ -34,10 +33,10 @@ function Upload() {
     const [fullName, setFullName] = useState('')
     const [validEmail, setValidEmail] = useState(false)
     const [submitted, setSubmitted] = useState(false)
-    const [requestID, setRequestID] = useState('')
-    const [requestStatus, setRequestStatus] = useState('')
     const [showModal, setShowModal] = useState(false)
-    const [showAlert, setShowAlert] = useState(false)
+    const [coupon, setCoupon] = useState("")
+    const [isValidCoupon, setIfIsValidCoupon] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
 
     const handleSelectYear = (e) => {
         setYear(e)
@@ -57,14 +56,16 @@ function Upload() {
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value)
-        //const pattern = new RegExp(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/i);
         const pattern = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 
-        setValidEmail(pattern.test(email.toLowerCase()))
+        if (e.target.value != null) {
+            setValidEmail(pattern.test(e.target.value.toLowerCase()))
+        }
     }
 
     const handleFullNameChange = (e) => {
         setFullName(e.target.value)
+        console.log(e.target.value)
     }
 
     const getFileControlTitle = () => {
@@ -83,27 +84,25 @@ function Upload() {
         return year !== '' && type !== '' && files.length > 0 && validEmail && fullName !== ''
     }
 
-    const handleDismissAlert = () => {
-        setShowAlert(false)
+    const handleCouponChange = (e) => {
+        if (coupon.length + (e.target.value.length - coupon.length) > 36) {
+            return
+        }
+        if (uuidValidate(e.target.value)) {
+            setIfIsValidCoupon(true)
+        } else {
+            setIfIsValidCoupon(false)
+        }
+        setCoupon(e.target.value)
+        setErrorMessage('')
     }
 
-    const handleCopyReqID = () => {
-        setShowAlert(true)
-    }
-
-    const handleModalClose = () => {
-        setShowModal(false)
-        setShowAlert(false)
-        setSubmitted(false)
-        setRequestStatus('')
-        setRequestID('')
-    }
-
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (submitted) {
             return
         }
 
+        setErrorMessage('')
         setSubmitted(true)
         setShowModal(true)
         const formData = new FormData();
@@ -116,40 +115,86 @@ function Upload() {
         formData.append('year', year)
         formData.append('email', email)
         formData.append('fullName', fullName)
+        formData.append('coupon', coupon)
 
-        axios.post('https://taxes-api.digitools-it.com/api/statements/upload', formData, {
-            headers: {
-                "Content-Type": "multipart/form-data"
+        try {
+            const stripe = await stripePromise
+
+            const baseUrl = process.env.REACT_APP_API_BASE_URL;
+
+            const uploadResponse = await axios.post(`${baseUrl}/api/statements/upload`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            })
+            const requestId = uploadResponse.data.request_id;
+
+            if (!isValidCoupon) {
+                const checkoutResponse = await axios.post(`${baseUrl}/api/payments/create-checkout-session`,
+                    {
+                        "request_id": requestId,
+                    })
+                const sessionID = checkoutResponse.data.id
+                const result = await stripe.redirectToCheckout({
+                    sessionId: sessionID,
+                });
+
+                if (result.error) {
+                    history.push("/checkout?success=false&request_id=" + requestId)
+                }
+            } else {
+                history.push(`/checkout?success=true&coupon=${coupon}&request_id=${requestId}`)
             }
-        })
-            .then(res => {
-                setRequestID(res.data.request_id)
-                setRequestStatus(statusSuccess)
-            })
-            .catch(e => {
-                console.error(e.response.data)
-                setRequestID('')
-                setRequestStatus(statusFail)
-            })
-            .finally(() => {
-                setSubmitted(false)
-            })
+        } catch (err) {
+            if (err.response && err.response.data && err.response.data.description) {
+                setErrorMessage(err.response.data.description)
+                return;
+            }
+            history.push(`/checkout?success=false`)
+        } finally {
+            setSubmitted(false)
+            setShowModal(false)
+        }
     }
 
     return (
         <Container fluid id="upload-container">
-            <Row>
-                <Col/>
-                <Col md={15}>
+            <Row className="justify-content-md-center">
+                <Col justify-content-md-center sm={15}>
                     <Form>
+                        <Form.Group className={"text-center"}>
+                            <FormText><h4>Submit new request</h4></FormText>
+                        </Form.Group>
+                        <Form.Group controlId="formUploadYear" id='form-group-year-dd'>
+                            <Form.Label className={"text-start"}>Select year</Form.Label>
+                            <Dropdown>
+                                <DropdownButton title={year !== '' ? year : 'select'} variant="outline-dark"
+                                                id="dropdown-year"
+                                                onSelect={handleSelectYear}>
+                                    <Dropdown.Item eventKey="2020">2020</Dropdown.Item>
+                                </DropdownButton>
+                            </Dropdown>
+                        </Form.Group>
+                        <Form.Group controlId="formUploadType">
+                            <Form.Label className={"text-start"}>Select type</Form.Label>
+                            <Dropdown>
+                                <DropdownButton title={type !== '' ? type : 'select'}
+                                                variant="outline-dark" id="dropdown-type"
+                                                onSelect={handleSelectType}>
+                                    <Dropdown.Item eventKey="revolut">revolut</Dropdown.Item>
+                                    <Dropdown.Item eventKey="etoro">etoro</Dropdown.Item>
+                                </DropdownButton>
+                            </Dropdown>
+                        </Form.Group>
                         <Form.Group controlId="formUploadStatements">
+                            <Form.Label className={"text-start"}>Select statements</Form.Label>
                             <Form.File onChange={handleSelectedFiles}
                                        label={getFileControlTitle()}
                                        id='statements'
                                        type="file" name="statements" multiple custom/>
                             {files.length === 0
                                 ? <Form.Text muted>
-                                    Tax calculations will be applied on selected files
+                                    Tax calculations will be applied on selected files for {year}
                                 </Form.Text>
                                 : files.map((fName, i) =>
                                     <Form.Text key={i} muted>
@@ -158,63 +203,72 @@ function Upload() {
                             }
                         </Form.Group>
                         <Form.Group controlId="formFullName" id='form-group-full-name'>
-                            <Form.Control type="input" className="text-center" placeholder="Full name: eg. John Doe"
-                                          autoComplete="off"
+                            <Form.Label className={"text-start"}>Name</Form.Label>
+                            <Form.Control type="input" placeholder="Enter name"
                                           onChange={handleFullNameChange}/>
                         </Form.Group>
                         <Form.Group controlId="formEmail" id='form-group-email-id'>
-                            <Form.Control type="email" className="text-center" placeholder="Your email"
-                                          autoComplete="off"
+                            <Form.Label className={"text-start"}>Email</Form.Label>
+                            <Form.Control type="input" placeholder="example@domain.com"
                                           onChange={handleEmailChange}/>
                             <Form.Text muted>
                                 You will receive your report on the provided email
                             </Form.Text>
                         </Form.Group>
-                        <Form.Group controlId="formUploadYear" id='form-group-year-dd'>
-                            <Dropdown>
-                                <DropdownButton title="Select year" variant="outline-dark" id="dropdown-year"
-                                                alignRight
-                                                onSelect={handleSelectYear}>
-                                    <Dropdown.Item eventKey="2020">2020</Dropdown.Item>
-                                </DropdownButton>
-                                <Form.Text><strong>{year}</strong></Form.Text>
-                            </Dropdown>
-                        </Form.Group>
-                        <Form.Group controlId="formUploadType">
-                            <Dropdown>
-                                <DropdownButton title="Select type"
-                                                variant="outline-dark" id="dropdown-type"
-                                                alignRight
-                                                onSelect={handleSelectType}>
-                                    <Dropdown.Item eventKey="revolut">revolut</Dropdown.Item>
-                                    <Dropdown.Item eventKey="etoro">etoro</Dropdown.Item>
-                                </DropdownButton>
-                                <Form.Text><strong>{type}</strong></Form.Text>
-                            </Dropdown>
+
+                        <Form.Group controlId="formCoupon" id='form-group-coupon'>
+                            <Form.Label className={"text-start"}>Coupon</Form.Label>
+                            <Form.Control type="input" placeholder="Enter coupon if available"
+                                          value={coupon}
+                                          onChange={handleCouponChange}/>
+                            <Form.Text muted>
+                                You will skip payments is it's a valid code
+                            </Form.Text>
                         </Form.Group>
                         <Form.Group controlId="formSubmitButton" id='form-group-submit-btn-id'>
                             {
-                                canSubmit() ?
+                                canSubmit() && isValidCoupon ?
                                     <Button title="submit" variant="success"
                                             onClick={handleSubmit}
                                             block>
                                         Submit
                                     </Button> :
-                                    <OverlayTrigger
-                                        placement="bottom"
-                                        delay={{show: 250, hide: 400}}
-                                        overlay={
-                                            <Tooltip id="button-tooltip">Select statements, type and input your name and
-                                                email to submit
-                                            </Tooltip>
-                                        }>
-                                        <Button title="submit" variant="outline-danger" block>Submit</Button>
-                                    </OverlayTrigger>
+                                    (!canSubmit() ?
+                                            <OverlayTrigger
+                                                placement="bottom"
+                                                delay={{show: 250, hide: 400}}
+                                                overlay={
+                                                    <Tooltip>
+                                                        Select statements, type and input your name and email to submit
+                                                    </Tooltip>
+                                                }>
+                                                <Button title="submit"
+                                                        className="btn-outline-dark"
+                                                        style={{
+                                                            color: "#FFF",
+                                                            backgroundColor: "#5433FF"
+                                                        }}>
+                                                    Submit and checkout with
+                                                    <Image className='align-content-end' src={logo}/>
+                                                </Button>
+                                            </OverlayTrigger> :
+                                            <Button title="submit"
+                                                    className="btn-outline-dark"
+                                                    onClick={handleSubmit}
+                                                    style={{
+                                                        color: "#FFF",
+                                                        backgroundColor: "#5433FF",
+                                                        cursor: "pointer"
+                                                    }}>
+                                                Submit and checkout with
+                                                <Image className='align-content-end' src={logo}/>
+                                            </Button>
+                                    )
                             }
+                            <FormText className="text-danger">{errorMessage}</FormText>
                         </Form.Group>
                     </Form>
                 </Col>
-                <Col/>
             </Row>
             <Modal
                 size="md"
@@ -224,40 +278,12 @@ function Upload() {
             >
                 <Modal.Header>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        {requestStatus === '' ? defaultSubmitModalHeader : completedSubmitModalHeader}
+                        Processing request &nbsp;
+                        <Spinner animation="border" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>
                     </Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    <h5>Status</h5>
-                    {
-                        requestStatus === '' ?
-                            <Skeleton/> :
-                            <Form.Text
-                                className={requestStatus === statusSuccess ? "text-success" : "text-danger"}>
-                                {requestStatus}
-                            </Form.Text>
-
-                    }
-                    <br/>
-                    <h5>Request ID</h5>
-                    {
-                        requestID !== '' || requestStatus === statusFail ?
-                            <Form.Text>{requestID}</Form.Text> :
-                            <Skeleton/>
-                    }
-                </Modal.Body>
-                <Modal.Footer>
-                    <Alert dismissible onClick={handleDismissAlert} show={showAlert}
-                           variant={"success"}>
-                        <Form.Text>Copied <strong> {requestID}</strong> to clipboard</Form.Text>
-                    </Alert>
-                    {requestStatus === statusSuccess ??
-                    <CopyToClipboard text={requestID}>
-                        <Button onClick={handleCopyReqID}>Copy request ID</Button>
-                    </CopyToClipboard>
-                    }
-                    <Button variant="danger" onClick={handleModalClose}>Close</Button>
-                </Modal.Footer>
             </Modal>
         </Container>
     )
