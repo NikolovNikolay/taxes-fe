@@ -1,9 +1,12 @@
-import {Button, Form, FormControl, FormLabel, FormText, InputGroup, OverlayTrigger, Tooltip} from "react-bootstrap";
+import {Button, Form, FormControl, FormLabel, FormText, InputGroup} from "react-bootstrap";
 import {CopyToClipboard} from "react-copy-to-clipboard/lib/Component";
 import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 import React from 'react';
 import axios from "axios";
+
+const defaultCopyButtonLabel = "Copy";
+const clickedCopyButtonLabel = "Copied";
 
 class SuccessCheckout extends React.Component {
 
@@ -13,9 +16,9 @@ class SuccessCheckout extends React.Component {
 
     requestId = this.props.requestId
     state = {
-        showCopyRequestTooltip: false,
-        showCopyCouponTooltip: false,
-        coupon: ""
+        coupon: "",
+        requestCopyButtonLabel: defaultCopyButtonLabel,
+        couponCopyButtonLabel: defaultCopyButtonLabel,
     }
 
     componentDidMount() {
@@ -37,16 +40,16 @@ class SuccessCheckout extends React.Component {
     }
 
     handleRequestIDCopyClick = () => {
-        this.setState({...this.state, showCopyRequestTooltip: true})
+        this.setState({...this.state, requestCopyButtonLabel: clickedCopyButtonLabel})
         setTimeout(() =>
-            this.setState({...this.state, showCopyRequestTooltip: false}), 500
+            this.setState({...this.state, requestCopyButtonLabel: defaultCopyButtonLabel}), 500
         )
     }
 
     handleCouponCopyClick = () => {
-        this.setState({...this.state, showCopyCouponTooltip: true})
+        this.setState({...this.state, couponCopyButtonLabel: clickedCopyButtonLabel})
         setTimeout(() =>
-            this.setState({...this.state, showCopyCouponTooltip: false}), 500
+            this.setState({...this.state, couponCopyButtonLabel: defaultCopyButtonLabel}), 500
         )
     }
 
@@ -70,17 +73,11 @@ class SuccessCheckout extends React.Component {
                             placeholder=""
                         />
                         <InputGroup.Append>
-                            <OverlayTrigger
-                                placement={"bottom"}
-                                show={this.state.showCopyRequestTooltip}
-                                overlay={<Tooltip id="tooltip-disabled">Copied</Tooltip>}>
-                            <span className="d-inline-block">
-                                <CopyToClipboard text={this.requestId}>
-                                    <Button variant={"outline-info"}
-                                            onClick={this.handleRequestIDCopyClick}>Copy</Button>
-                                </CopyToClipboard>
-                            </span>
-                            </OverlayTrigger>
+                            <CopyToClipboard text={this.requestId}>
+                                <Button disabled={this.requestId == null || this.requestId === ""}
+                                        variant={"outline-secondary"}
+                                        onClick={this.handleRequestIDCopyClick}>{this.state.requestCopyButtonLabel}</Button>
+                            </CopyToClipboard>
                         </InputGroup.Append>
                     </InputGroup>
                 </Form.Group>
@@ -95,17 +92,11 @@ class SuccessCheckout extends React.Component {
                             placeholder=""
                         />
                         <InputGroup.Append>
-                            <OverlayTrigger
-                                placement={"bottom"}
-                                show={this.state.showCopyCouponTooltip}
-                                overlay={<Tooltip id="tooltip-disabled">Copied</Tooltip>}>
-                            <span className="d-inline-block">
-                                <CopyToClipboard text={this.state.coupon}>
-                                    <Button variant={"outline-info"}
-                                            onClick={this.handleCouponCopyClick}>Copy</Button>
-                                </CopyToClipboard>
-                            </span>
-                            </OverlayTrigger>
+                            <CopyToClipboard text={this.state.coupon}>
+                                <Button disabled={this.state.coupon === ""}
+                                        variant={"outline-secondary"}
+                                        onClick={this.handleCouponCopyClick}>{this.state.couponCopyButtonLabel}</Button>
+                            </CopyToClipboard>
                         </InputGroup.Append>
                     </InputGroup>
                 </Form.Group>
@@ -117,7 +108,6 @@ class SuccessCheckout extends React.Component {
     }
 }
 
-const
-    SuccessCheckoutWithRouter = withRouter(SuccessCheckout);
+const SuccessCheckoutWithRouter = withRouter(SuccessCheckout);
 
 export default SuccessCheckoutWithRouter;

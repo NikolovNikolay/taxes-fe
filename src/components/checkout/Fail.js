@@ -1,4 +1,4 @@
-import {Button, Form, FormControl, FormText, InputGroup, OverlayTrigger, Row, Tooltip} from "react-bootstrap";
+import {Button, Form, FormControl, FormText, InputGroup, Row} from "react-bootstrap";
 import {CopyToClipboard} from "react-copy-to-clipboard/lib/Component";
 import React, {useState} from "react";
 import {useHistory} from 'react-router-dom';
@@ -6,13 +6,16 @@ import {useHistory} from 'react-router-dom';
 function FailCheckout({requestId}) {
     const history = useHistory();
 
-    let [showCopyRequestTooltip, setShowReqCopyTooltip] = useState(false)
+    const defaultCopyButtonLabel = "Copy";
+    const clickedCopyButtonLabel = "Copied";
+
+    let [copyRequestIdButtonLabel, setCopyRequestIdButtonLabel] = useState(defaultCopyButtonLabel);
     const contactMail = process.env.REACT_APP_CONTACT_EMAIL;
 
     const handleRequestIDCopyClick = () => {
-        setShowReqCopyTooltip(true)
+        setCopyRequestIdButtonLabel(clickedCopyButtonLabel)
         setTimeout(() =>
-            setShowReqCopyTooltip(false), 500
+            setCopyRequestIdButtonLabel(defaultCopyButtonLabel), 500
         )
     }
     return (
@@ -32,16 +35,10 @@ function FailCheckout({requestId}) {
                             placeholder=""
                         />
                         <InputGroup.Append>
-                            <OverlayTrigger
-                                placement={"bottom"}
-                                show={showCopyRequestTooltip}
-                                overlay={<Tooltip id="tooltip-disabled">Copied</Tooltip>}>
-                            <span className="d-inline-block">
-                                <CopyToClipboard text={requestId}>
-                                    <Button variant={"outline-info"} onClick={handleRequestIDCopyClick}>Copy</Button>
-                                </CopyToClipboard>
-                            </span>
-                            </OverlayTrigger>
+                            <CopyToClipboard text={requestId}>
+                                <Button variant={"outline-secondary"}
+                                        onClick={handleRequestIDCopyClick}>{copyRequestIdButtonLabel}</Button>
+                            </CopyToClipboard>
                         </InputGroup.Append>
                     </InputGroup>
                     <FormText>

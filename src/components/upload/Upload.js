@@ -235,7 +235,7 @@ function Upload({stripePromise}) {
                                     </Button> :
                                     (!canSubmit() ?
                                             <OverlayTrigger
-                                                placement="bottom"
+                                                placement="top"
                                                 delay={{show: 250, hide: 400}}
                                                 overlay={
                                                     <Tooltip>
