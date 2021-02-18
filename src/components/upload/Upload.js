@@ -124,7 +124,8 @@ function Upload({stripePromise}) {
 
             const uploadResponse = await axios.post(`${baseUrl}/api/statements/upload`, formData, {
                 headers: {
-                    "Content-Type": "multipart/form-data"
+                    "Content-Type": "multipart/form-data",
+                    "X-API-KEY": btoa(process.env.REACT_APP_CLIENT_TOKEN)
                 }
             })
             const requestId = uploadResponse.data.request_id;
@@ -133,6 +134,10 @@ function Upload({stripePromise}) {
                 const checkoutResponse = await axios.post(`${baseUrl}/api/payments/create-checkout-session`,
                     {
                         "request_id": requestId,
+                    }, {
+                        headers: {
+                            "X-API-KEY": btoa(process.env.REACT_APP_CLIENT_TOKEN)
+                        }
                     })
                 const sessionID = checkoutResponse.data.id
                 const result = await stripe.redirectToCheckout({

@@ -26,6 +26,10 @@ class SuccessCheckout extends React.Component {
         axios.post(`${baseUrl}/api/payments/obtain-coupon`,
             {
                 "request_id": this.requestId,
+            }, {
+                headers: {
+                    "X-API-KEY": btoa(process.env.REACT_APP_CLIENT_TOKEN)
+                }
             })
             .then(res => {
                 const coupon = res.data.coupon
