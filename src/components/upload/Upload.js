@@ -222,7 +222,7 @@ function Upload({stripePromise}) {
                                           value={coupon}
                                           onChange={handleCouponChange}/>
                             <Form.Text muted>
-                                You will skip payments is it's a valid code
+                                Skip payments if valid code
                             </Form.Text>
                         </Form.Group>
                         <Form.Group controlId="formSubmitButton" id='form-group-submit-btn-id'>
