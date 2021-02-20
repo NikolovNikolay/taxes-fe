@@ -19,7 +19,7 @@ import {
 import './Uplaod.css'
 import logo from './stripe_logo.svg'
 import axios from "axios";
-import {useHistory} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 
 function Upload({stripePromise}) {
     const history = useHistory();
@@ -162,11 +162,18 @@ function Upload({stripePromise}) {
         }
     }
 
+    const handleInstructions = (e) => {
+        e.preventDefault()
+        history.push("/instructions")
+    }
+
     return (
         <Container fluid id="upload-container">
             <Row className="justify-content-md-center">
                 <Col justify-content-md-center sm={15}>
                     <Form>
+                        <FormText>Make sure you read <Link onClick={handleInstructions}>this</Link> first</FormText>
+                        <br/>
                         <Form.Group className={"text-center"}>
                             <FormText><h4>Submit new request</h4></FormText>
                         </Form.Group>
