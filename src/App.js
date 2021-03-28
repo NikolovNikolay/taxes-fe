@@ -1,7 +1,5 @@
 import './App.css';
-import {Container, Nav, Navbar} from "react-bootstrap";
-import {loadStripe} from "@stripe/stripe-js/pure";
-import {Elements} from "@stripe/react-stripe-js";
+import {Nav, Navbar} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import {HashRouter, Route, Switch} from "react-router-dom";
@@ -12,7 +10,7 @@ import Terms from "./components/terms/Terms";
 import AboutMe from "./components/about/AboutMe";
 import UploadFree from "./components/upload/UploadFree";
 
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_SECRET);
+// const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_SECRET);
 
 function App() {
     return (
@@ -39,25 +37,23 @@ function App() {
                 </Navbar>
 
                 <Switch>
-                    <Container>
-                        <Route path="/" exact>
-                            <Elements stripe={stripePromise}>
-                                <UploadFree/>
-                            </Elements>
-                        </Route>
-                        <Route path="/checkout">
-                            <Checkout/>
-                        </Route>
-                        <Route path="/faq">
-                            <Instructions/>
-                        </Route>
-                        <Route path="/terms-of-use">
-                            <Terms/>
-                        </Route>
-                        <Route path="/about-me">
-                            <AboutMe/>
-                        </Route>
-                    </Container>
+                    <Route path="/" exact>
+                        {/*<Elements stripe={stripePromise}>*/}
+                        <UploadFree/>
+                        {/*</Elements>*/}
+                    </Route>
+                    <Route path="/checkout">
+                        <Checkout/>
+                    </Route>
+                    <Route path="/faq">
+                        <Instructions/>
+                    </Route>
+                    <Route path="/terms-of-use">
+                        <Terms/>
+                    </Route>
+                    <Route path="/about-me">
+                        <AboutMe/>
+                    </Route>
                 </Switch>
             </div>
         </HashRouter>

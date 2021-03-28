@@ -148,10 +148,11 @@ function UploadFree() {
 
     return (
         <Container fluid id="upload-container">
-            <Row className="justify-content-md-center">
-                <Col justify-content-sm-center sm={15}>
+            <Row className="justify-content-sm-center">
+                <Col sm={15}>
                     <Form>
-                        <FormText>Make sure you read the <Link onClick={handleInstructions}>FAQ</Link> first</FormText>
+                        <FormText>Make sure you read the <Link to={""}
+                                                               onClick={handleInstructions}>FAQ</Link> first</FormText>
                         <br/>
                         <Form.Group className={"text-center"}>
                             <FormText><h4>Submit new request</h4></FormText>
@@ -219,7 +220,7 @@ function UploadFree() {
                                             <Col xs={9} style={{"paddingLeft": 0}}
                                                  className={"justify-content-xs-start"}>
                                                 <label htmlFor={"terms"}>I have read and agreed with the &nbsp;
-                                                    <Link onClick={handleTerms}>terms and conditions</Link>
+                                                    <Link to="" onClick={handleTerms}>terms and conditions</Link>
                                                 </label>
                                             </Col>
                                         </Row>
