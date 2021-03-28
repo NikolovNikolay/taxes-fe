@@ -146,7 +146,6 @@ function Upload({stripePromise}) {
                 history.push(`/checkout?success=true&coupon=${coupon}&request_id=${requestId}`)
             }
         } catch (err) {
-            console.error(err)
             if (err.response && err.response.data && err.response.data.description) {
                 setErrorMessage(err.response.data.description)
                 return;

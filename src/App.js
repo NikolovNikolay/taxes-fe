@@ -12,7 +12,6 @@ import Instructions from "./components/instructions/Instructions";
 import Terms from "./components/terms/Terms";
 import AboutMe from "./components/about/AboutMe";
 
-console.log(process.env.REACT_APP_STRIPE_SECRET)
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_SECRET);
 
 function App() {
