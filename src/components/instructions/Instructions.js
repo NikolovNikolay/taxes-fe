@@ -57,7 +57,7 @@ function Instructions() {
                                 <b>
                                     I am not a tax consultant and I do not undertake any responsibility if you plan to
                                     use
-                                    my paid cloud service to come up with calculations that you can use for Bulgarian
+                                    this service to come up with calculations that you will use for Bulgarian
                                     tax
                                     declaration purposes. There might be discrepancies between the amounts that you need
                                     to
@@ -66,10 +66,8 @@ function Instructions() {
                                     The web service works only with
                                     USD
                                     transactions from eToro and Revolut as well as only with US financial instruments.
-                                    The
-                                    web service is built specifically for the individual who needs to do tax
-                                    declarations in
-                                    Bulgaria.
+                                    It is built specifically for the individual, who needs to do tax
+                                    declarations in Bulgaria.
                                 </b>
                             </p>
                         </section>
