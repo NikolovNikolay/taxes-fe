@@ -87,3 +87,8 @@ button:disabled {
     opacity: 0.5;
     cursor: default;
 }
+
+#terms .form-check-label {
+    margin-bottom: 10px;
+}
+

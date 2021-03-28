@@ -1,0 +1,12 @@
+#instructions-container {
+    align-self: center;
+    padding: 1%;
+}
+
+#instructions-container p {
+    font-size: 1.3em;
+}
+
+#buttons-container {
+    text-align: center;
+}

@@ -8,6 +8,7 @@ import {
     Dropdown,
     DropdownButton,
     Form,
+    FormCheck,
     FormText,
     Image,
     Modal,
@@ -30,12 +31,12 @@ function Upload({stripePromise}) {
     const [type, setType] = useState('')
     const [email, setEmail] = useState('')
     const [files, setFiles] = useState([])
-    const [fullName, setFullName] = useState('')
     const [validEmail, setValidEmail] = useState(false)
     const [submitted, setSubmitted] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [coupon, setCoupon] = useState("")
     const [isValidCoupon, setIfIsValidCoupon] = useState(false)
+    const [agreedWithTerms, setAgreedWithTerms] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 
     const handleSelectYear = (e) => {
@@ -63,11 +64,6 @@ function Upload({stripePromise}) {
         }
     }
 
-    const handleFullNameChange = (e) => {
-        setFullName(e.target.value)
-        console.log(e.target.value)
-    }
-
     const getFileControlTitle = () => {
         if (files.length === 0) {
             return defaultFormFileTitle;
@@ -81,7 +77,7 @@ function Upload({stripePromise}) {
     }
 
     const canSubmit = () => {
-        return year !== '' && type !== '' && files.length > 0 && validEmail && fullName !== ''
+        return year !== '' && type !== '' && files.length > 0 && validEmail && agreedWithTerms
     }
 
     const handleCouponChange = (e) => {
@@ -114,7 +110,6 @@ function Upload({stripePromise}) {
         formData.append('type', type)
         formData.append('year', year)
         formData.append('email', email)
-        formData.append('fullName', fullName)
         formData.append('coupon', coupon)
 
         try {
@@ -170,9 +165,9 @@ function Upload({stripePromise}) {
     return (
         <Container fluid id="upload-container">
             <Row className="justify-content-md-center">
-                <Col justify-content-md-center sm={15}>
+                <Col justify-content-sm-center sm={15}>
                     <Form>
-                        <FormText>Make sure you read <Link onClick={handleInstructions}>this</Link> first</FormText>
+                        <FormText>Make sure you read the <Link onClick={handleInstructions}>FAQ</Link> first</FormText>
                         <br/>
                         <Form.Group className={"text-center"}>
                             <FormText><h4>Submit new request</h4></FormText>
@@ -199,7 +194,7 @@ function Upload({stripePromise}) {
                             </Dropdown>
                         </Form.Group>
                         <Form.Group controlId="formUploadStatements">
-                            <Form.Label className={"text-start"}>Select statements</Form.Label>
+                            <Form.Label className={"text-start"}>Upload</Form.Label>
                             <Form.File onChange={handleSelectedFiles}
                                        label={getFileControlTitle()}
                                        id='statements'
@@ -213,11 +208,6 @@ function Upload({stripePromise}) {
                                         {fName}
                                     </Form.Text>)
                             }
-                        </Form.Group>
-                        <Form.Group controlId="formFullName" id='form-group-full-name'>
-                            <Form.Label className={"text-start"}>Name</Form.Label>
-                            <Form.Control type="input" placeholder="Enter name"
-                                          onChange={handleFullNameChange}/>
                         </Form.Group>
                         <Form.Group controlId="formEmail" id='form-group-email-id'>
                             <Form.Label className={"text-start"}>Email</Form.Label>
@@ -238,45 +228,63 @@ function Upload({stripePromise}) {
                             </Form.Text>
                         </Form.Group>
                         <Form.Group controlId="formSubmitButton" id='form-group-submit-btn-id'>
-                            {
-                                canSubmit() && isValidCoupon ?
-                                    <Button title="submit" variant="success"
-                                            onClick={handleSubmit}
-                                            block>
-                                        Submit
-                                    </Button> :
-                                    (!canSubmit() ?
-                                            <OverlayTrigger
-                                                placement="top"
-                                                delay={{show: 250, hide: 400}}
-                                                overlay={
-                                                    <Tooltip>
-                                                        Select statements, type and input your name and email to submit
-                                                    </Tooltip>
-                                                }>
+                            <>
+                                <FormText muted>
+                                    <div id="terms-container">
+                                        <Row className="justify-content-sm-start">
+                                            <Col xs={2}><FormCheck id="terms"
+                                                                   onClick={(e) => setAgreedWithTerms(!agreedWithTerms)}/>
+                                            </Col>
+                                            <Col xs={10} style={{"paddingLeft": 0}}
+                                                 className={"justify-content-sm-start"}>
+                                                <label htmlFor={"terms"}>I have read and agreed with the &nbsp;
+                                                    <a href={"#/terms-of-use"}>terms and conditions</a></label>
+                                            </Col>
+                                        </Row>
+                                    </div>
+                                </FormText>
+
+                                {
+                                    canSubmit() && isValidCoupon ?
+                                        <Button title="submit" variant="success"
+                                                onClick={handleSubmit}
+                                                block>
+                                            Submit
+                                        </Button> :
+                                        (!canSubmit() ?
+                                                <OverlayTrigger
+                                                    placement="top"
+                                                    delay={{show: 250, hide: 400}}
+                                                    overlay={
+                                                        <Tooltip>
+                                                            Select statements, type and input your name and email to
+                                                            submit
+                                                        </Tooltip>
+                                                    }>
+                                                    <Button title="submit"
+                                                            className="btn-outline-dark"
+                                                            style={{
+                                                                color: "#FFF",
+                                                                backgroundColor: "#5433FF"
+                                                            }}>
+                                                        Submit and checkout with
+                                                        <Image className='align-content-end' src={logo}/>
+                                                    </Button>
+                                                </OverlayTrigger> :
                                                 <Button title="submit"
                                                         className="btn-outline-dark"
+                                                        onClick={handleSubmit}
                                                         style={{
                                                             color: "#FFF",
-                                                            backgroundColor: "#5433FF"
+                                                            backgroundColor: "#5433FF",
+                                                            cursor: "pointer"
                                                         }}>
                                                     Submit and checkout with
                                                     <Image className='align-content-end' src={logo}/>
                                                 </Button>
-                                            </OverlayTrigger> :
-                                            <Button title="submit"
-                                                    className="btn-outline-dark"
-                                                    onClick={handleSubmit}
-                                                    style={{
-                                                        color: "#FFF",
-                                                        backgroundColor: "#5433FF",
-                                                        cursor: "pointer"
-                                                    }}>
-                                                Submit and checkout with
-                                                <Image className='align-content-end' src={logo}/>
-                                            </Button>
-                                    )
-                            }
+                                        )
+                                }
+                            </>
                             <FormText className="text-danger">{errorMessage}</FormText>
                         </Form.Group>
                     </Form>

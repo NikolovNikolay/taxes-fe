@@ -28,91 +28,73 @@ function Instructions() {
             <Container id="instructions-container">
                 <Form>
                     <FormText>
-                        <section id={"motivation"}>
+                        <section id={"disclaimer"}>
                             <header>
                                 <h4>
-                                    Motivation
+                                    Disclaimer
                                 </h4>
                             </header>
                             <br/>
                             <p>
-                                I'm a Bulgarian individual and software developer who does day trading. Most likely you
-                                are
-                                trading with shares too, and that's why you are here.
-                            </p>
-                            <p>
-                                After several unsuccessful attempts to negotiate a reasonable price with accountants for
-                                the
-                                audit of several thousand transactions per year, broken down to multiple PDFs and other
-                                type
-                                of e-files, I decided to collect the required information and prepare the needed
-                                calculations for the Bulgarian NRA myself.
-                            </p>
-                            <p>
-                                <strong>
-                                    Just a few things to note first:
-                                    <ul>
-                                        <li>
-                                            there may be a discrepancy with the amount of annual tax calculated by your
-                                            accountant and the online service - I do not undertake any responsibility in
-                                            this regard
-                                        </li>
-                                        <li>
-                                            this is a paid service - I believe that time is priceless, and the time and
-                                            effort I invested, combined with the time and money you can save, they can
-                                            be
-                                            put together for a symbolic price.
-                                        </li>
-                                        <li>
-                                            the domain is pretty fresh and that is the only service in my portfolio I am
-                                            offering at the moment; the complete lack of information about the author
-                                            and
-                                            the services offered may be a big no go, but you are free to pass anyways.
-                                            For more info you can reach me at <a
-                                            href={`mailto:${process.env.REACT_APP_CONTACT_EMAIL}`}>{process.env.REACT_APP_CONTACT_EMAIL}</a>
-                                        </li>
-                                        <li>
-                                            right now the service works with trades placed in USD only
-                                        </li>
-                                        <li>
-                                            there are foreigners that are happy to use the service and declare taxes to
-                                            the Bulgarian NRA, so the page is in English.
-                                        </li>
-                                    </ul>
-                                </strong>
+                                <b>
+                                    I am not a tax consultant and I do not undertake any responsibility if you plan to
+                                    use
+                                    my paid cloud service to come up with calculations that you can use for Bulgarian
+                                    tax
+                                    declaration purposes. There might be discrepancies between the amounts that you need
+                                    to
+                                    declare and the ones calculated by your accountant.
+                                    <br/>
+                                    The web service works only with
+                                    USD
+                                    transactions from eToro and Revolut as well as only with US financial instruments.
+                                    The
+                                    web service is built specifically for the individual who needs to do tax
+                                    declarations in
+                                    Bulgaria.
+                                </b>
                             </p>
                         </section>
                         <br/>
-                        <section id={"personal-data"}>
+                        <section>
                             <header>
                                 <h4>
-                                    Export statements from eToro or Revolut
+                                    How does it work?
+                                </h4>
+                            </header>
+                        </section>
+                        <br/>
+                        <section id={"etoro"}>
+                            <header>
+                                <h4>
+                                    eToro
                                 </h4>
                             </header>
                             <br/>
                             <p>
-                                If you need your taxes from <strong>eToro</strong> calculated, then you might want to
-                                export
-                                an <strong>Excel</strong> statement in the scope of the target year and maybe a month
-                                after
-                                (e.g. 01-01-2020 - 31.01.2021). It's also fine if you break down the statements to
-                                several
-                                files. You should include January (next year) in your report if you want to get a list
-                                of
-                                the open positions you carried over.
+                                You need to export an Excel statement in the scope of the target year and maybe a month
+                                after (e.g. Jan 1,2020 - Jan 31, 2021). It's also fine if you break down the statements
+                                to several files. You should include January (next year) in your report if you want to
+                                get a list of the open positions you carried over.
                             </p>
+                        </section>
+                        <section id={"revolut"}>
+                            <header>
+                                <h4>
+                                    Revolut
+                                </h4>
+                            </header>
+                            <br/>
                             <p>
-                                For <strong>Revolut</strong> you should export statements for all months you want to
-                                include
-                                in the report. Again, make sure to attach next year's January to get carried over
-                                positions.
+                                You should export statements for all months you want to include in the report. Again,
+                                make sure to attach next year's January to get carried over positions.
                             </p>
                             <br/>
                         </section>
-                        <section id={"statements"}>
+                        <section id={"requirements"}>
                             <header>
                                 <h4>
-                                    About that statement files themselves
+                                    What are the requirements?
                                 </h4>
                             </header>
                             <br/>
@@ -128,9 +110,11 @@ function Instructions() {
                                     <li>the statements are from the target year</li>
                                     <li>
                                         the right files - any other files in the correct format will be accepted, but
-                                        they
-                                        won't
-                                        be red accurately and you will get inadequate results
+                                        they won't be red accurately and you will get inadequate results
+                                    </li>
+                                    <li>
+                                        please do not upload Revolut statements and eToro statements at the same time,
+                                        as these have different formats and require separate requests.
                                     </li>
                                 </ul>
                             </p>
@@ -139,7 +123,7 @@ function Instructions() {
                         <section id={"submission"}>
                             <header>
                                 <h4>
-                                    The submission
+                                    How do I submit?
                                 </h4>
                             </header>
                             <br/>
@@ -154,14 +138,11 @@ function Instructions() {
                                     </li>
                                     <li>
                                         Enter your email and full names in the text fields - these are required as you
-                                        will
-                                        get
-                                        your report on your email. You may enter Gin Tonic in the name field if you
-                                        like. We
-                                        don't judge anybody on how they prefer to be called. Just make sure that the
-                                        email
-                                        is
-                                        correct.
+                                        will get your report on your email. You may enter Gin Tonic in the name field if
+                                        you
+                                        like. We don't judge anybody on how they prefer to be called. Just make sure
+                                        that the
+                                        email is correct.
                                     </li>
                                     <li>
                                         Use a coupon if you have one. The coupon lets you submit your statements without
@@ -186,7 +167,7 @@ function Instructions() {
                         <section id={"personal-data"}>
                             <header>
                                 <h4>
-                                    Your data
+                                    What about the data I submit?
                                 </h4>
                             </header>
                             <br/>
@@ -198,7 +179,7 @@ function Instructions() {
                         <section id={"payments"}>
                             <header>
                                 <h4>
-                                    Payments
+                                    How are payments handled?
                                 </h4>
                             </header>
                             <br/>
@@ -212,24 +193,20 @@ function Instructions() {
                                 cost you <strong>10 BGN</strong> and you will get a coupon code if you need to re-submit
                                 your data.
                             </p>
-                            <p>
-                                Once on the checkout page you will have
-                            </p>
                         </section>
-                        <br/>
-                        <section id={"calculations"}>
+                        <section id={"value"}>
                             <header>
                                 <h4>
-                                    The calculations
+                                    What will I get after I place the payment?
                                 </h4>
                             </header>
                             <br/>
                             <p>
-                                The calculations will output the information needed to fill <a
+                                You will receive an email that features information that you can fill in <a
                                 href="https://nra.bg/document?id=19524">annex 5</a> and <a
-                                href="https://nra.bg/document?id=19527">annex 8</a> in your
-                                declarations. Тhe official exchange rates for the corresponding day and date of the
-                                transaction are taken into account.
+                                href="https://nra.bg/document?id=19527">annex 8</a> in your declarations. Тhe official
+                                European Central Bank USD/BGN exchange rates
+                                for the corresponding day and date of the transaction are taken into account.
                             </p>
                             <p>
                                 If the statements you provide are exhaustive enough, you will get:

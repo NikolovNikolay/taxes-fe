@@ -9,6 +9,8 @@ import {HashRouter, Route, Switch} from "react-router-dom";
 import Checkout from "./components/checkout/Checkout";
 import {LinkContainer} from 'react-router-bootstrap'
 import Instructions from "./components/instructions/Instructions";
+import Terms from "./components/terms/Terms";
+import AboutMe from "./components/about/AboutMe";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_SECRET);
 
@@ -23,8 +25,14 @@ function App() {
                             <LinkContainer to={"/"}>
                                 <Nav.Link href="">Submit statements</Nav.Link>
                             </LinkContainer>
-                            <LinkContainer to={"/instructions"}>
-                                <Nav.Link href="">Instructions</Nav.Link>
+                            <LinkContainer to={"/faq"}>
+                                <Nav.Link href="">FAQ</Nav.Link>
+                            </LinkContainer>
+                            <LinkContainer to={"/about-me"}>
+                                <Nav.Link href="">About me</Nav.Link>
+                            </LinkContainer>
+                            <LinkContainer to={"/terms-of-use"}>
+                                <Nav.Link href="">Terms of use</Nav.Link>
                             </LinkContainer>
                         </Nav>
                     </Navbar.Collapse>
@@ -40,8 +48,14 @@ function App() {
                         <Route path="/checkout">
                             <Checkout/>
                         </Route>
-                        <Route path="/instructions">
+                        <Route path="/faq">
                             <Instructions/>
+                        </Route>
+                        <Route path="/terms-of-use">
+                            <Terms/>
+                        </Route>
+                        <Route path="/about-me">
+                            <AboutMe/>
                         </Route>
                     </Container>
                 </Switch>
