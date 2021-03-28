@@ -159,7 +159,12 @@ function Upload({stripePromise}) {
 
     const handleInstructions = (e) => {
         e.preventDefault()
-        history.push("/instructions")
+        history.push("/faq")
+    }
+
+    const handleTerms = (e) => {
+        e.preventDefault()
+        history.push("/terms-of-use")
     }
 
     return (
@@ -238,7 +243,8 @@ function Upload({stripePromise}) {
                                             <Col xs={10} style={{"paddingLeft": 0}}
                                                  className={"justify-content-sm-start"}>
                                                 <label htmlFor={"terms"}>I have read and agreed with the &nbsp;
-                                                    <a href={"#/terms-of-use"}>terms and conditions</a></label>
+                                                    <Link onClick={handleTerms}>terms and conditions</Link>
+                                                </label>
                                             </Col>
                                         </Row>
                                     </div>
