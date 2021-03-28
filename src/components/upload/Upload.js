@@ -77,7 +77,7 @@ function Upload({stripePromise}) {
     }
 
     const canSubmit = () => {
-        return year !== '' && type !== '' && files.length > 0 && validEmail && agreedWithTerms
+        return year !== '' && type !== '' && files.length > 0 && validEmail
     }
 
     const handleCouponChange = (e) => {
@@ -95,6 +95,11 @@ function Upload({stripePromise}) {
 
     const handleSubmit = async () => {
         if (submitted) {
+            return
+        }
+
+        if (!agreedWithTerms) {
+            setErrorMessage('You should read and agree to the terms and conditions first')
             return
         }
 
