@@ -1,5 +1,4 @@
 import './App.css';
-import Upload from "./components/upload/Upload";
 import {Container, Nav, Navbar} from "react-bootstrap";
 import {loadStripe} from "@stripe/stripe-js/pure";
 import {Elements} from "@stripe/react-stripe-js";
@@ -11,6 +10,7 @@ import {LinkContainer} from 'react-router-bootstrap'
 import Instructions from "./components/instructions/Instructions";
 import Terms from "./components/terms/Terms";
 import AboutMe from "./components/about/AboutMe";
+import UploadFree from "./components/upload/UploadFree";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_SECRET);
 
@@ -42,7 +42,7 @@ function App() {
                     <Container>
                         <Route path="/" exact>
                             <Elements stripe={stripePromise}>
-                                <Upload stripePromise={stripePromise}/>
+                                <UploadFree/>
                             </Elements>
                         </Route>
                         <Route path="/checkout">

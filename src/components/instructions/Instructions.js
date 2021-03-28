@@ -28,6 +28,24 @@ function Instructions() {
             <Container id="instructions-container">
                 <Form>
                     <FormText>
+                        <section id={"contact"}>
+                            <header>
+                                <h4>
+                                    How do I reach you out?
+                                </h4>
+                            </header>
+                            <br/>
+                            <p>
+                                You can send me an email <a
+                                href={`mailto:${process.env.REACT_APP_CONTACT_EMAIL}`}>{process.env.REACT_APP_CONTACT_EMAIL}</a>.
+                                I will try responding shortly.
+                            </p>
+                            <p>
+                                If you find this too useful you can <a href={"https://revolut.me/nikinikolov"}
+                                                                       target={"_new"}>buy me a beer or two.</a>
+                            </p>
+                        </section>
+                        <br/>
                         <section id={"disclaimer"}>
                             <header>
                                 <h4>
@@ -94,7 +112,7 @@ function Instructions() {
                         <section id={"requirements"}>
                             <header>
                                 <h4>
-                                    What are the requirements?
+                                    What's required?
                                 </h4>
                             </header>
                             <br/>
@@ -145,22 +163,13 @@ function Instructions() {
                                         email is correct.
                                     </li>
                                     <li>
-                                        Use a coupon if you have one. The coupon lets you submit your statements without
-                                        paying
-                                        anything.<br/>You will get your coupon when you do your first submission. You
-                                        can
-                                        use
-                                        the code <strong>two</strong> more times for the <strong>same report type and
-                                        email</strong>.
+                                        Input your coupon code. The coupon is personalized and you can request one by
+                                        contacting me.
                                     </li>
                                 </ol>
                                 Once you fill everything needed hit the button at the end of the form and you will be
-                                redirected
-                                to a success/fail page with your request ID and coupon code.<br/>If all goes well you
-                                will
-                                receive an email with your report. If not please contact <a
-                                href={`mailto:${process.env.REACT_APP_CONTACT_EMAIL}`}>{process.env.REACT_APP_CONTACT_EMAIL}</a> for
-                                more details.
+                                redirected to a success/fail page with your request ID and coupon code.<br/>If all goes
+                                well you will receive an email with your report.
                             </p>
                             <br/>
                         </section>
@@ -176,28 +185,10 @@ function Instructions() {
                             </p>
                         </section>
                         <br/>
-                        <section id={"payments"}>
-                            <header>
-                                <h4>
-                                    How are payments handled?
-                                </h4>
-                            </header>
-                            <br/>
-                            <p>
-                                Payments are made via the <a href={"https://stripe.com/"} rel={"noreferrer"}
-                                                             target={"_blank"}>Stripe</a> platform.
-                                After the server receives your request you will be redirected to a checkout page, hosted
-                                in
-                                Stripe, using secure connection. Then you should input your card details. Your request
-                                will
-                                cost you <strong>10 BGN</strong> and you will get a coupon code if you need to re-submit
-                                your data.
-                            </p>
-                        </section>
                         <section id={"value"}>
                             <header>
                                 <h4>
-                                    What will I get after I place the payment?
+                                    What will I get after I submit my reports?
                                 </h4>
                             </header>
                             <br/>
@@ -299,9 +290,6 @@ function Instructions() {
                                 ---------------------<br/>
                                 3 | Date: 20-11-2020 | Token: FVRR | Name: Fiverr | Avg price (USD): XXX,XX | Avg
                                 price (BGN): XXX,XX | Units: XXX,XXX |<br/>
-                                <br/>
-                                Use the following coupon to submit two more times: 4430ba64-06cd-4572-bedb-1cc9135422b1.
-                                It is bound to the current report type and your email only.<br/>
                             </p>
                         </Modal.Body>
                         <Modal.Footer>
