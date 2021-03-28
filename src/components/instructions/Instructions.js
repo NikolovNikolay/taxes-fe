@@ -41,8 +41,8 @@ function Instructions() {
                                 I will try responding shortly.
                             </p>
                             <p>
-                                If you find this too useful you can <a href={"https://revolut.me/nikinikolov"}
-                                                                       target={"_new"}>buy me a beer or two.</a>
+                                If you find this service useful you can <a href={"https://revolut.me/nikinikolov"}
+                                                                           target={"_new"}>buy me a beer or two.</a>
                             </p>
                         </section>
                         <br/>
